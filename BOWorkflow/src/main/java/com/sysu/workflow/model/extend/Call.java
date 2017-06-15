@@ -68,8 +68,8 @@ public class Call extends ParamsContainer implements Serializable {
                     if (t.getName().equals(this.name)) {
                         // Send Message to APP
                         String dasher = "";
-                        if (t.getRole() != null) {
-                            dasher = t.getRole();
+                        if (t.getAgent() != null) {
+                            dasher = t.getAgent();
                         } else if (t.getAssignee() != null) {
                             dasher = t.getAssignee();
                         }

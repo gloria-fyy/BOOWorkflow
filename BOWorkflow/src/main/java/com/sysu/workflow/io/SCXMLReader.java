@@ -238,7 +238,9 @@ public final class SCXMLReader {
     private static final String ELEM_BOO_CALL = "call";
     private static final String ELEM_BOO_NEWBO = "newbo";
     private static final String ELEM_BOO_SUBPROCESS = "subprocess";
-
+    private static final String ELEM_BOO_RESOURCES = "resources";
+    private static final String ELEM_BOO_RESOURCE = "resource";
+    private static final String ELEM_BOO_ROLE = "role";
 
 
     //---- 属性名 ----//
@@ -289,11 +291,8 @@ public final class SCXMLReader {
     private static final String ATTR_TARGETSTATE="targetState";
 
     //---- BOO拓展 ----//
-    private static final String ATTR_ROLE = "role";
+    private static final String ATTR_AGENT = "agent";
 
-
-
-    //------------------------- 公有的方法 -------------------------//
     /*
      * Public methods
      */
@@ -301,9 +300,6 @@ public final class SCXMLReader {
     /**
      * Discourage instantiation since this is a utility class.
      */
-   /* private SCXMLReader() {
-        super();
-    }*/
     public SCXMLReader() {
 
     }
@@ -570,7 +566,7 @@ public final class SCXMLReader {
     private static SCXML readDocument(final XMLStreamReader reader, final Configuration configuration)
             throws IOException, ModelException, XMLStreamException {
 
-        //开始实例化SCXML
+        // 实例化SCXML
         SCXML scxml = new SCXML();
         while (reader.hasNext()) {
             String name, nsURI;
@@ -647,6 +643,8 @@ public final class SCXMLReader {
                             readFinal(reader, configuration, scxml, null);
                         } else if (ELEM_DATAMODEL.equals(name)) {
                             readDatamodel(reader, configuration, scxml, null);
+                        } else if (ELEM_BOO_RESOURCES.equals(name)) {
+                            readResources(reader, configuration, scxml, null);
                         } else if (ELEM_BOO_TASKS.equals(name)) {
                             readTasks(reader, configuration, scxml, null);
                         } else if (ELEM_SCRIPT.equals(name) && !hasGlobalScript) {
@@ -1068,7 +1066,6 @@ public final class SCXMLReader {
         scxml.setDatamodel(dm);
     }
 
-
     /**
      * Read the contents of this &lt;tasks&gt; element.
      * Rinkako
@@ -1115,6 +1112,52 @@ public final class SCXMLReader {
     }
 
     /**
+     * Read the contents of this &lt;resource&gt; element.
+     * Rinkako
+     *
+     * @param reader        The {@link XMLStreamReader} providing the SCXML document to parse.
+     * @param configuration The {@link Configuration} to use while parsing.
+     * @param scxml         The root of the object model being parsed.
+     * @param parent        The parent {@link TransitionalState} for this tasklist (null for top level).
+     * @throws XMLStreamException An exception processing the underlying {@link XMLStreamReader}.
+     * @throws ModelException     The Commons SCXML object model is incomplete or inconsistent (includes
+     *                            errors in the SCXML document that may not be identified by the schema).
+     */
+    private static void readResources(final XMLStreamReader reader, final Configuration configuration,
+                                  final SCXML scxml, final TransitionalState parent)
+            throws XMLStreamException, ModelException {
+        Resources rsObj = new Resources();
+        loop:
+        while (reader.hasNext()) {
+            String name, nsURI;
+            switch (reader.next()) {
+                case XMLStreamConstants.START_ELEMENT:
+                    pushNamespaces(reader, configuration);
+                    nsURI = reader.getNamespaceURI();
+                    name = reader.getLocalName();
+                    if (XMLNS_SCXML.equals(nsURI)) {
+                        if (ELEM_BOO_RESOURCE.equals(name)) {
+                            readResource(reader, configuration, rsObj);
+                        } else if (ELEM_BOO_ROLE.equals(name)) {
+                            readRole(reader, configuration, rsObj);
+                        }
+                        else {
+                            reportIgnoredElement(reader, configuration, ELEM_BOO_RESOURCES, nsURI, name);
+                        }
+                    } else {
+                        reportIgnoredElement(reader, configuration, ELEM_BOO_RESOURCES, nsURI, name);
+                    }
+                    break;
+                case XMLStreamConstants.END_ELEMENT:
+                    popNamespaces(reader, configuration);
+                    break loop;
+                default:
+            }
+        }
+        scxml.setResources(rsObj);
+    }
+
+    /**
      * Read the contents of this &lt;data&gt; element.
      *
      * @param reader        The {@link XMLStreamReader} providing the SCXML document to parse.
@@ -1146,25 +1189,61 @@ public final class SCXMLReader {
         Task tk = new Task();
         tk.setId(readRequiredAV(reader, ELEM_BOO_TASK, ATTR_ID));
         tk.setName(readAV(reader, ATTR_NAME));
-        // role和assignee不能同时指定，但必须指定其中一个
-        String role = readAV(reader, ATTR_ROLE);
+        // agent和assignee不能同时指定，但必须指定其中一个
+        String agent = readAV(reader, ATTR_AGENT);
         String assignee = readAV(reader, ATTR_ASSIGNEE);
         if (assignee != null) {
-            if (role != null) {
-                reportConflictingAttribute(reader, configuration, ELEM_BOO_TASK, ATTR_ROLE, ATTR_ASSIGNEE);
+            if (agent != null) {
+                reportConflictingAttribute(reader, configuration, ELEM_BOO_TASK, ATTR_AGENT, ATTR_ASSIGNEE);
             } else {
                 tk.setAssignee(assignee);
             }
-        } else if (role == null) {
+        } else if (agent == null) {
             // force error missing required location or expr: use location attr for this
-            tk.setRole(readRequiredAV(reader, ELEM_BOO_TASK, ATTR_ROLE));
+            tk.setAgent(readRequiredAV(reader, ELEM_BOO_TASK, ATTR_AGENT));
         } else {
-            tk.setRole(role);
+            tk.setAgent(agent);
         }
         tk.setInstanceExpr(readAV(reader, ATTR_INSTANCESEXPR));
         tk.setEvent(readRequiredAV(reader, ELEM_BOO_TASK, ATTR_EVENT));
         readNamespaces(configuration, tk);
         tasks.addTask(tk);
+        skipToEndElement(reader);
+    }
+
+    /**
+     * Read the contents of this &lt;resource&gt; element.
+     *
+     * @param reader        The {@link XMLStreamReader} providing the SCXML document to parse.
+     * @param configuration The {@link Configuration} to use while parsing.
+     * @param resObj        The parent {@link Resources} for this resource catalogue.
+     * @throws XMLStreamException An exception processing the underlying {@link XMLStreamReader}.
+     */
+    private static void readResource(final XMLStreamReader reader, final Configuration configuration, final Resources resObj)
+            throws XMLStreamException, ModelException {
+        Resource rs = new Resource();
+        rs.setName(readRequiredAV(reader, ELEM_BOO_TASK, ATTR_NAME));
+        rs.setType(readRequiredAV(reader, ELEM_BOO_TASK, ATTR_TYPE));
+        rs.setCount(readAV(reader, ATTR_EXPR));
+        readNamespaces(configuration, rs);
+        resObj.AddResource(rs);
+        skipToEndElement(reader);
+    }
+
+    /**
+     * Read the contents of this &lt;role&gt; element.
+     *
+     * @param reader        The {@link XMLStreamReader} providing the SCXML document to parse.
+     * @param configuration The {@link Configuration} to use while parsing.
+     * @param resObj        The parent {@link Resources} for this resource catalogue.
+     * @throws XMLStreamException An exception processing the underlying {@link XMLStreamReader}.
+     */
+    private static void readRole(final XMLStreamReader reader, final Configuration configuration, final Resources resObj)
+            throws XMLStreamException, ModelException {
+        Role tr = new Role();
+        tr.setName(readRequiredAV(reader, ELEM_BOO_ROLE, ATTR_NAME));
+        readNamespaces(configuration, tr);
+        resObj.AddRole(tr);
         skipToEndElement(reader);
     }
 

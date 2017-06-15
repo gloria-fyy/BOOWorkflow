@@ -2,10 +2,13 @@
 package com.sysu.workflow;
 
 import com.sun.xml.internal.ws.api.pipe.Engine;
+import com.sysu.workflow.bridge.YAWLAdapter;
 import com.sysu.workflow.engine.*;
 import com.sysu.workflow.invoke.Invoker;
 import com.sysu.workflow.model.*;
 import com.sysu.workflow.model.Observable;
+import com.sysu.workflow.model.extend.Resources;
+import com.sysu.workflow.model.extend.Role;
 import com.sysu.workflow.semantics.SCXMLSemanticsImpl;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
@@ -482,7 +485,7 @@ public class SCXMLExecutor implements SCXMLIOProcessor {
      *                        model problem.
      */
     public void go() throws ModelException {
-        // 不是子状态机就注册一颗新实例树
+        // register a new instance tree if this state-machine is the root one
         try {
             if (this.RootTid.equals("") || this.RootTid.equals(this.Tid)) {
                 TimeInstanceTree myTree = new TimeInstanceTree();
@@ -494,7 +497,50 @@ public class SCXMLExecutor implements SCXMLIOProcessor {
             }
         }
         catch (Exception e) {
-            System.out.println("Executor error at go");
+            System.out.println("Executor error at go when create instance tree");
+            e.printStackTrace();
+        }
+        // connect to the resource server if never connect
+        boolean reconnectFlag = YAWLAdapter.SessionHandle == null;
+        if (!reconnectFlag) {
+            StringBuilder checkRes = new StringBuilder();
+            YAWLAdapter.GetInstance().CheckConnectToRouter(YAWLAdapter.SessionHandle, checkRes);
+            if (checkRes.toString().equals("true")) {
+                reconnectFlag = false;
+            }
+        }
+        if (reconnectFlag) {
+            try {
+                StringBuilder res = new StringBuilder();
+                YAWLAdapter.GetInstance().ConnectToRouter("scxml", "scxml", res);
+                YAWLAdapter.SessionHandle = res.toString();
+            } catch (Exception e) {
+                System.out.println("Cannot connect to Resource Service when executor go");
+                e.printStackTrace();
+            }
+        }
+        // register resources
+        try {
+            SCXML scxml = this.exctx.getScInstance().getStateMachine();
+            Resources rsCata = scxml.getResources();
+            if (rsCata != null) {
+                YAWLAdapter adapter = YAWLAdapter.GetInstance();
+                // Register roles
+                List<Role> roleList = rsCata.GetRoleList();
+                for (Role r : roleList) {
+                    StringBuilder roleAddRes = new StringBuilder();
+                    if (adapter.addRole(YAWLAdapter.SessionHandle, r.getName(), "", "", "", roleAddRes)) {
+                        r.setId(roleAddRes.toString());
+                    }
+                    else {
+                        System.out.println("Add role failed: " + r.getName() + " " + roleAddRes.toString());
+                    }
+                }
+                // Register roles for human resources
+            }
+        }
+        catch (Exception e) {
+            System.out.println("Executor error at go when register resource");
             e.printStackTrace();
         }
         // same as reset

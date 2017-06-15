@@ -64,25 +64,24 @@ public class SCXMLReaderTest {
     @Test
     public void testSCXMLReader() throws Exception {
 
-        EngineClient ec = new EngineClient();
-        Map<String, String> args = new HashMap<String, String>();
-        args.put("action", "connect");
-        args.put("userid", "admin");
-        args.put("password", "2333333");
+//        EngineClient ec = new EngineClient();
+//        Map<String, String> args = new HashMap<String, String>();
+//        args.put("action", "connect");
+//        args.put("userid", "admin");
+//        args.put("password", "2333333");
         //ec.executeGet("http://localhost:8827/gateway", args);
-        EngineServer.AsyncBeginAccept();
+        //EngineServer.AsyncBeginAccept();
 
 
-        while (true){
-            Thread.sleep(10);
-        }
+        //while (true){
+        //    Thread.sleep(10);
+        //}
 
-/*
-        String str = "YAWL";
-        String tt = encrypt(str);
+//        String str = "YAWL";
+//        String tt = encrypt(str);
 
         //URL url = SCXMLTestHelper.getResource("helloworld.xml");
-        URL url = new URL("file", "", "D:\\Documents\\GitProject\\BOOWorkflow\\BOWorkflow\\target\\classes\\GuestOrder.xml");
+        URL url = new URL("file", "", "D:\\Documents\\GitProject\\BOOWorkflow\\BOWorkflow\\target\\classes\\GuestOrder2.xml");
         SCXML scxml = new SCXMLReader().read(url);
         Evaluator evaluator = new JexlEvaluator();
         SCXMLExecutor executor = new SCXMLExecutor(evaluator, new MulitStateMachineDispatcher(), new SimpleErrorReporter());
@@ -119,7 +118,6 @@ public class SCXMLReaderTest {
         executor.triggerEvent(tEvt);
 
         Assert.assertNotNull(scxml);
-        */
     }
 
     public class EventDataPackage {
