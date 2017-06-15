@@ -1,6 +1,7 @@
 
 package com.sysu.workflow.model;
 
+import com.sysu.workflow.model.extend.Resources;
 import com.sysu.workflow.model.extend.Tasks;
 
 import java.io.Serializable;
@@ -91,6 +92,11 @@ public class SCXML implements Serializable, Observable,
      * The tasks which is a container of task
      */
     private Tasks tasks;
+
+    /**
+     * The resources catalogue
+     */
+    private Resources resources;
 
     /**
      * Optional property holding the initial script for this SCXML document.
@@ -405,6 +411,14 @@ public class SCXML implements Serializable, Observable,
      */
     public void setDatamodelName(final String datamodelName) {
         this.datamodelName = datamodelName;
+    }
+
+    public Resources getResources() {
+        return resources;
+    }
+
+    public void setResources(Resources resources) {
+        this.resources = resources;
     }
 }
 

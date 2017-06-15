@@ -6,6 +6,7 @@ import com.sysu.workflow.engine.*;
 import com.sysu.workflow.invoke.Invoker;
 import com.sysu.workflow.model.*;
 import com.sysu.workflow.model.Observable;
+import com.sysu.workflow.model.extend.Resources;
 import com.sysu.workflow.semantics.SCXMLSemanticsImpl;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
@@ -482,7 +483,7 @@ public class SCXMLExecutor implements SCXMLIOProcessor {
      *                        model problem.
      */
     public void go() throws ModelException {
-        // 不是子状态机就注册一颗新实例树
+        // register a new instance tree if this state-machine is the root one
         try {
             if (this.RootTid.equals("") || this.RootTid.equals(this.Tid)) {
                 TimeInstanceTree myTree = new TimeInstanceTree();
@@ -494,7 +495,19 @@ public class SCXMLExecutor implements SCXMLIOProcessor {
             }
         }
         catch (Exception e) {
-            System.out.println("Executor error at go");
+            System.out.println("Executor error at go when create instance tree");
+            e.printStackTrace();
+        }
+        // register resources
+        try {
+            SCXML scxml = this.exctx.getScInstance().getStateMachine();
+            Resources rsCata = scxml.getResources();
+            if (rsCata != null) {
+                /* 这里用网关去发注册请求 */
+            }
+        }
+        catch (Exception e) {
+            System.out.println("Executor error at go when register resource");
             e.printStackTrace();
         }
         // same as reset

@@ -31,12 +31,10 @@ public class EngineServerHandler implements Runnable {
                 while(true){
                     requestHeader=bd.readLine();
                     if (requestHeader == null) {break;}
-                    if (requestHeader.isEmpty() == true) {break;}
+                    if (requestHeader.isEmpty()) {break;}
 
                     System.out.println(requestHeader);
-                    /**
-                     * 获得GET参数
-                     */
+
                     if(requestHeader.startsWith("GET")){
                         int begin = 4;
                         int end = requestHeader.indexOf("HTTP/") - 1;
@@ -49,10 +47,7 @@ public class EngineServerHandler implements Runnable {
                         String condition=requestHeader.substring(begin, end);
                         System.out.println("POST参数是："+condition);
                     }
-                    /**
-                     * 获得POST参数
-                     * 1.获取请求内容长度
-                     */
+                    // 获得POST参数
                     if(requestHeader.startsWith("Content-Length")){
                         int begin=requestHeader.indexOf("Content-Lengh:")+"Content-Length:".length();
                         String postParamterLength=requestHeader.substring(begin).trim();

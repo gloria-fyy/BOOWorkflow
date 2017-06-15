@@ -233,7 +233,7 @@ public class SCInstance implements Serializable {
 
     /**
      * @return Return the state machine for this instance
-     * 放回状态机实例
+     * 返回状态机实例
      */
     public SCXML getStateMachine() {
         return stateMachine;
