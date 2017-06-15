@@ -15,7 +15,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 登录结果
      * @return 操作是否成功
      */
-    Boolean ConnectToRouter(String username, String password, StringBuilder outResult);
+    boolean ConnectToRouter(String username, String password, StringBuilder outResult);
 
     /**
      * 获取当前是否成功连接到消息路由
@@ -23,7 +23,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 是否连接到路由
      * @return 操作是否成功
      */
-    Boolean CheckConnectToRouter(String handle, StringBuilder outResult);
+    boolean CheckConnectToRouter(String handle, StringBuilder outResult);
 
     /**
      * 断开SCXML引擎到消息路由的连接
@@ -31,7 +31,73 @@ public interface IRouterAdapter {
      * @param outResult [out] 断开的结果
      * @return 操作是否成功
      */
-    Boolean DisconnectFromRouter(String handle, StringBuilder outResult);
+    boolean DisconnectFromRouter(String handle, StringBuilder outResult);
+
+    /* Methods of Participant and Nonhuman Service */
+
+    /**
+     * 添加一个参与者
+     * @param handle 连接句柄
+     * @param userid 用户名
+     * @param password 密码明文
+     * @param encrypt 密码是否加密保存
+     * @param lastname 姓
+     * @param firstname 名
+     * @param admin 是否为管理员
+     * @param description 描述文本
+     * @param notes 备注文本
+     * @param outResult [out] 执行结果
+     * @return 操作是否成功
+     */
+    boolean addParticipant(String handle, String userid, String password, boolean encrypt,
+                           String lastname, String firstname, boolean admin,
+                           String description, String notes, StringBuilder outResult);
+
+    /**
+     * 添加一个非人资源
+     * @param handle 连接句柄
+     * @param name 名字
+     * @param category 目录
+     * @param subcategory 子目录
+     * @param description 描述文本
+     * @param notes 备注文本
+     * @param outResult [out] 执行结果
+     * @return 操作是否成功
+     */
+    boolean addNonHumanResource(String handle, String name, String category, String subcategory,
+                                String description, String notes, StringBuilder outResult);
+
+    /**
+     * 添加一个角色
+     * @param handle 连接句柄
+     * @param name 角色名字
+     * @param description 描述文本
+     * @param notes 备注文本
+     * @param containingRoleID 包含角色id
+     * @param outResult [out] 执行结果
+     * @return 操作是否成功
+     */
+    boolean addRole(String handle, String name, String description, String notes,
+                    String containingRoleID, StringBuilder outResult);
+
+    /**
+     * 将一个参与者添加到角色
+     * @param handle 连接句柄
+     * @param participantID 参与者Pid
+     * @param roleID 角色id
+     * @param outResult [out] 执行结果
+     * @return 操作是否成功
+     */
+    boolean addParticipantToRole(String handle, String participantID, String roleID, StringBuilder outResult);
+
+    /**
+     * 添加一个非人力资源目录
+     * @param handle 连接句柄
+     * @param category 目录名
+     * @param outResult [out] 执行结果
+     * @return 操作是否成功
+     */
+    boolean addNonHumanCategory(String handle, String category, StringBuilder outResult);
 
     /* Methods of User */
     /**
@@ -41,7 +107,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 该用户的Pid
      * @return 操作是否成功
      */
-    Boolean GetParticipantFromUserID(String handle, String username, StringBuilder outResult);
+    boolean GetParticipantFromUserID(String handle, String username, StringBuilder outResult);
 
     /* Methods of Case */
     /**
@@ -52,7 +118,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 执行结果
      * @return 操作是否成功
      */
-    Boolean UploadSpecificationFile(String handle, String filePath, String fileName, StringBuilder outResult);
+    boolean UploadSpecificationFile(String handle, String filePath, String fileName, StringBuilder outResult);
 
     /**
      * 卸载一个过程
@@ -64,7 +130,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 执行结果
      * @return 操作是否成功
      */
-    Boolean UnloadSpecification(String handle, String specidentifier, String specversion, String specuri, StringBuilder outResult);
+    boolean UnloadSpecification(String handle, String specidentifier, String specversion, String specuri, StringBuilder outResult);
 
     /**
      * 获取当前加载的过程
@@ -72,7 +138,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 当前加载的过程集合的串表达
      * @return 操作是否成功
      */
-    Boolean GetLoadedSpecificationList(String handle, StringBuilder outResult);
+    boolean GetLoadedSpecificationList(String handle, StringBuilder outResult);
 
     /**
      * 获取一个过程的数据
@@ -84,7 +150,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 数据的XML格式串
      * @return 操作是否成功
      */
-    Boolean GetSpecificationData(String handle, String specidentifier, String specversion, String specuri, StringBuilder outResult);
+    boolean GetSpecificationData(String handle, String specidentifier, String specversion, String specuri, StringBuilder outResult);
 
     /**
      * 获取一个过程的名称
@@ -96,7 +162,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 过程名称
      * @return 操作是否成功
      */
-    Boolean GetSpecificationName(String handle, String specidentifier, String specversion, String specuri, StringBuilder outResult);
+    boolean GetSpecificationName(String handle, String specidentifier, String specversion, String specuri, StringBuilder outResult);
 
 
     /**
@@ -109,7 +175,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 执行结果
      * @return 操作是否成功
      */
-    Boolean launchCase(String handle, String specidentifier, String specversion, String specuri, StringBuilder outResult);
+    boolean launchCase(String handle, String specidentifier, String specversion, String specuri, StringBuilder outResult);
 
     /**
      * 获取指定流程的所有运行中的案例
@@ -121,7 +187,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 执行结果
      * @return 操作是否成功
      */
-    Boolean GetRunningCases(String handle, String specidentifier, String specversion, String specuri, StringBuilder outResult);
+    boolean GetRunningCases(String handle, String specidentifier, String specversion, String specuri, StringBuilder outResult);
 
     /**
      * 取消一个Case
@@ -130,7 +196,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 执行结果
      * @return 操作是否成功
      */
-    Boolean CancelCase(String handle,  String caseId, StringBuilder outResult);
+    boolean CancelCase(String handle,  String caseId, StringBuilder outResult);
 
 
 
@@ -150,7 +216,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 工作列表的XML表达
      * @return 操作是否成功
      */
-    Boolean GetWorkQueueByPid(String handle, String pid, String queueType, StringBuilder outResult);
+    boolean GetWorkQueueByPid(String handle, String pid, String queueType, StringBuilder outResult);
 
     /**
      * 用户接受一个工作项
@@ -160,7 +226,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 执行结果
      * @return 操作是否成功
      */
-    Boolean AcceptOfferItemByPid(String handle, String pid, String itemId, StringBuilder outResult);
+    boolean AcceptOfferItemByPid(String handle, String pid, String itemId, StringBuilder outResult);
 
     /**
      * 让一个用户开始一个工作项
@@ -170,7 +236,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 执行结果
      * @return 操作是否成功
      */
-    Boolean StartItemByPid(String handle, String pid, String itemId, StringBuilder outResult);
+    boolean StartItemByPid(String handle, String pid, String itemId, StringBuilder outResult);
 
     /**
      * 取消一个用户的一个工作项
@@ -180,7 +246,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 执行结果
      * @return 操作是否成功
      */
-    Boolean DeallocateByPid(String handle, String pid, String itemId, StringBuilder outResult);
+    boolean DeallocateByPid(String handle, String pid, String itemId, StringBuilder outResult);
 
     /**
      * 重分派一个用户的一个工作项
@@ -190,7 +256,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 执行结果
      * @return 操作是否成功
      */
-    Boolean ReallocateByPid(String handle, String pid, String itemId, StringBuilder outResult);
+    boolean ReallocateByPid(String handle, String pid, String itemId, StringBuilder outResult);
 
     /**
      * 保存一个工作项参数的编辑
@@ -201,7 +267,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 执行结果
      * @return 操作是否成功
      */
-    Boolean UpdateByPid(String handle, String pid, String itemId, String dataString, StringBuilder outResult);
+    boolean UpdateByPid(String handle, String pid, String itemId, String dataString, StringBuilder outResult);
 
     /**
      * 更新一个用户的一个工作项
@@ -211,7 +277,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 执行结果
      * @return 操作是否成功
      */
-    Boolean CompleteByPid(String handle, String pid, String itemId, StringBuilder outResult);
+    boolean CompleteByPid(String handle, String pid, String itemId, StringBuilder outResult);
 
     /**
      * 跳过一个用户的一个工作项
@@ -221,7 +287,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 执行结果
      * @return 操作是否成功
      */
-    Boolean SkipByPid(String handle, String pid, String itemId, StringBuilder outResult);
+    boolean SkipByPid(String handle, String pid, String itemId, StringBuilder outResult);
 
     /**
      * 将一个工作项从一个用户委派给另一个用户
@@ -232,7 +298,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 执行结果
      * @return 操作是否成功
      */
-    Boolean DelegateByPid(String handle, String pidFrom, String pidTo, String itemId, StringBuilder outResult);
+    boolean DelegateByPid(String handle, String pidFrom, String pidTo, String itemId, StringBuilder outResult);
 
     /**
      * 工作项批处理
@@ -242,7 +308,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 执行结果
      * @return 操作是否成功
      */
-    Boolean PileByPid(String handle, String pid, String itemId, StringBuilder outResult);
+    boolean PileByPid(String handle, String pid, String itemId, StringBuilder outResult);
 
     /**
      * 挂起一个用户的一个工作项
@@ -252,7 +318,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 执行结果
      * @return 操作是否成功
      */
-    Boolean SuspendByPid(String handle, String pid, String itemId, StringBuilder outResult);
+    boolean SuspendByPid(String handle, String pid, String itemId, StringBuilder outResult);
 
     /**
      * 解除一个用户的一个工作项的挂起状态
@@ -262,7 +328,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 执行结果
      * @return 操作是否成功
      */
-    Boolean UnsuspendByPid(String handle, String pid, String itemId, StringBuilder outResult);
+    boolean UnsuspendByPid(String handle, String pid, String itemId, StringBuilder outResult);
 
     /**
      * 由一个工作项的id获取一个工作项
@@ -271,7 +337,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 工作项的XML表达
      * @return 操作是否成功
      */
-    Boolean GetWorkItemByIid(String handle, String itemId, StringBuilder outResult);
+    boolean GetWorkItemByIid(String handle, String itemId, StringBuilder outResult);
 
     /**
      * 由一个工作项的id获取一个工作项的参数列表
@@ -280,7 +346,7 @@ public interface IRouterAdapter {
      * @param outResult [out] 工作项参数列表的XML表达
      * @return 操作是否成功
      */
-    Boolean GetWorkItemParametersByIid(String handle, String itemId, StringBuilder outResult);
+    boolean GetWorkItemParametersByIid(String handle, String itemId, StringBuilder outResult);
 
     /**
      * 由一个工作项的id获取一个工作项的数据模式
@@ -289,7 +355,5 @@ public interface IRouterAdapter {
      * @param outResult [out] 工作项数据模式的字符串表达
      * @return 操作是否成功
      */
-    Boolean GetWorkItemDataSchemaByIid(String handle, String itemId, StringBuilder outResult);
-
-
+    boolean GetWorkItemDataSchemaByIid(String handle, String itemId, StringBuilder outResult);
 }

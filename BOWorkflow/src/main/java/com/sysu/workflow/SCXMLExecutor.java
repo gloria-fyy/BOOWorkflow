@@ -2,6 +2,7 @@
 package com.sysu.workflow;
 
 import com.sun.xml.internal.ws.api.pipe.Engine;
+import com.sysu.workflow.bridge.YAWLAdapter;
 import com.sysu.workflow.engine.*;
 import com.sysu.workflow.invoke.Invoker;
 import com.sysu.workflow.model.*;
@@ -496,6 +497,15 @@ public class SCXMLExecutor implements SCXMLIOProcessor {
         }
         catch (Exception e) {
             System.out.println("Executor error at go when create instance tree");
+            e.printStackTrace();
+        }
+        // connect to the resource server
+        try {
+            StringBuilder res = null;
+            YAWLAdapter.GetInstance().ConnectToRouter("scxml", "scxml", res);
+        }
+        catch (Exception e) {
+            System.out.println("Cannot connect to Resource Service when executor go");
             e.printStackTrace();
         }
         // register resources
