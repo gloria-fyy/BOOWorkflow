@@ -21,6 +21,8 @@ public class YAWLAdapter extends EngineClient implements IRouterAdapter {
 
     public static YAWLAdapter GetInstance() { return YAWLAdapter.syncObject; }
 
+    public static String SessionHandle;
+
     /**
      * Initialises a map for transporting parameters - used by extending classes
      * @param action the name of the action to take
@@ -77,7 +79,6 @@ public class YAWLAdapter extends EngineClient implements IRouterAdapter {
             Map<String, String> params = prepareParamMap("connect", null);
             params.put("userid", username);
             params.put("password", this.encrypt(password, null));
-            outResult = new StringBuilder();
             outResult.append(executeGet(_serviceURI, params));
             return true;
         }
@@ -96,7 +97,6 @@ public class YAWLAdapter extends EngineClient implements IRouterAdapter {
     @Override
     public boolean CheckConnectToRouter(String handle, StringBuilder outResult) {
         try {
-            outResult = new StringBuilder();
             outResult.append(executeGet(_serviceURI, prepareParamMap("checkConnection", handle)));
             return true;
         }
@@ -115,8 +115,8 @@ public class YAWLAdapter extends EngineClient implements IRouterAdapter {
     @Override
     public boolean DisconnectFromRouter(String handle, StringBuilder outResult) {
         try {
-            outResult = new StringBuilder();
             outResult.append(executePost(_serviceURI, prepareParamMap("disconnect", handle)));
+            YAWLAdapter.SessionHandle = null;
             return true;
         }
         catch (Exception e) {
@@ -151,7 +151,6 @@ public class YAWLAdapter extends EngineClient implements IRouterAdapter {
             params.put("admin", String.valueOf(admin));
             params.put("description", description);
             params.put("notes", notes);
-            outResult = new StringBuilder();
             outResult.append(executeGet(_serviceURI, params));
             return true;
         }
@@ -181,7 +180,6 @@ public class YAWLAdapter extends EngineClient implements IRouterAdapter {
             params.put("subcategory", subcategory);
             params.put("description", description);
             params.put("notes", notes);
-            outResult = new StringBuilder();
             outResult.append(executeGet(_serviceURI, params));
             return true;
         }
@@ -209,7 +207,6 @@ public class YAWLAdapter extends EngineClient implements IRouterAdapter {
             params.put("description", description);
             params.put("notes", notes);
             params.put("containingroleid", containingRoleID);
-            outResult = new StringBuilder();
             outResult.append(executeGet(_serviceURI, params));
             return true;
         }
@@ -233,7 +230,6 @@ public class YAWLAdapter extends EngineClient implements IRouterAdapter {
             Map<String, String> params = prepareParamMap("addParticipantToRole", handle);
             params.put("participantid", participantID);
             params.put("roleid", roleID);
-            outResult = new StringBuilder();
             outResult.append(executeGet(_serviceURI, params));
             return true;
         }
@@ -255,7 +251,6 @@ public class YAWLAdapter extends EngineClient implements IRouterAdapter {
         try {
             Map<String, String> params = prepareParamMap("addNonHumanCategory", handle);
             params.put("category", category);
-            outResult = new StringBuilder();
             outResult.append(executeGet(_serviceURI, params));
             return true;
         }

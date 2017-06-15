@@ -26,16 +26,45 @@ public class Resources extends ParamsContainer implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * Role vector
+     */
+    private List<Role> roleVector = new LinkedList<Role>();
+
+    /**
+     * Add a resource item to the resources catalogue vector
+     * @param r the role pending to add
+     */
+    public void AddRole(Role r) {
+        this.roleVector.add(r);
+    }
+
+    /**
      * Resource vector
      */
     private List<Resource> resourcesVector = new LinkedList<Resource>();
 
     /**
      * Add a resource item to the resources catalogue vector
-     * @param r
+     * @param r the resource to add
      */
     public void AddResource(Resource r) {
         this.resourcesVector.add(r);
+    }
+
+    /**
+     * Get the vector of resource
+     * @return the reference of resource vector
+     */
+    public List<Resource> GetResourceList() {
+        return this.resourcesVector;
+    }
+
+    /**
+     * Get the vector of role
+     * @return the reference of role vector
+     */
+    public List<Role> GetRoleList() {
+        return this.roleVector;
     }
 
     /**

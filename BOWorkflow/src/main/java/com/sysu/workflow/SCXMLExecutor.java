@@ -8,6 +8,7 @@ import com.sysu.workflow.invoke.Invoker;
 import com.sysu.workflow.model.*;
 import com.sysu.workflow.model.Observable;
 import com.sysu.workflow.model.extend.Resources;
+import com.sysu.workflow.model.extend.Role;
 import com.sysu.workflow.semantics.SCXMLSemanticsImpl;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
@@ -499,21 +500,43 @@ public class SCXMLExecutor implements SCXMLIOProcessor {
             System.out.println("Executor error at go when create instance tree");
             e.printStackTrace();
         }
-        // connect to the resource server
-        try {
-            StringBuilder res = null;
-            YAWLAdapter.GetInstance().ConnectToRouter("scxml", "scxml", res);
+        // connect to the resource server if never connect
+        boolean reconnectFlag = YAWLAdapter.SessionHandle == null;
+        if (!reconnectFlag) {
+            StringBuilder checkRes = new StringBuilder();
+            YAWLAdapter.GetInstance().CheckConnectToRouter(YAWLAdapter.SessionHandle, checkRes);
+            if (checkRes.toString().equals("true")) {
+                reconnectFlag = false;
+            }
         }
-        catch (Exception e) {
-            System.out.println("Cannot connect to Resource Service when executor go");
-            e.printStackTrace();
+        if (reconnectFlag) {
+            try {
+                StringBuilder res = new StringBuilder();
+                YAWLAdapter.GetInstance().ConnectToRouter("scxml", "scxml", res);
+                YAWLAdapter.SessionHandle = res.toString();
+            } catch (Exception e) {
+                System.out.println("Cannot connect to Resource Service when executor go");
+                e.printStackTrace();
+            }
         }
         // register resources
         try {
             SCXML scxml = this.exctx.getScInstance().getStateMachine();
             Resources rsCata = scxml.getResources();
             if (rsCata != null) {
-                /* 这里用网关去发注册请求 */
+                YAWLAdapter adapter = YAWLAdapter.GetInstance();
+                // Register roles
+                List<Role> roleList = rsCata.GetRoleList();
+                for (Role r : roleList) {
+                    StringBuilder roleAddRes = new StringBuilder();
+                    if (adapter.addRole(YAWLAdapter.SessionHandle, r.getName(), "", "", "", roleAddRes)) {
+                        r.setId(roleAddRes.toString());
+                    }
+                    else {
+                        System.out.println("Add role failed: " + r.getName() + " " + roleAddRes.toString());
+                    }
+                }
+                // Register roles for human resources
             }
         }
         catch (Exception e) {

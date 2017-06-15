@@ -28,9 +28,9 @@ public class Task extends Action implements Serializable {
     private String name;
 
     /**
-     * 把任务指定给某个角色
+     * 把任务指定给某类角色
      */
-    private String role;
+    private String agent;
 
     /**
      * 把任务指定给具体的一个人
@@ -88,18 +88,18 @@ public class Task extends Action implements Serializable {
     }
 
     /**
-     * 获取role的值
+     * 获取agent的值
      */
-    public String getRole() {
-        return role;
+    public String getAgent() {
+        return this.agent;
     }
 
     /**
-     * 设置role的值
-     * @param role 任务角色
+     * 设置agent的值
+     * @param agent 任务角色
      */
-    public void setRole(String role) {
-        this.role = role;
+    public void setAgent(String agent) {
+        this.agent = agent;
     }
 
     /**
