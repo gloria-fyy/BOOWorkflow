@@ -122,7 +122,7 @@ public class InterfaceB_EnvironmentBasedServer extends HttpServlet {
 
     }
 
-
+    // RINKAKO
     private String processPostQuery(HttpServletRequest request) {
         debug(request);
 
