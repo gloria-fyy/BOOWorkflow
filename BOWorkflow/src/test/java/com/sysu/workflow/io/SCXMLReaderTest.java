@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.codec.binary.Base64;
+//import org.apache.commons.codec.binary.Base64;
 
 
 import java.io.BufferedReader;
@@ -41,7 +41,8 @@ public class SCXMLReaderTest {
         MessageDigest md = MessageDigest.getInstance("SHA");
         md.update(text.getBytes("UTF-8"));
         byte raw[] = md.digest();
-        return new Base64(-1).encodeToString(raw);            // -1 means no line breaks
+        //return new Base64(-1).encodeToString(raw);            // -1 means no line breaks
+        return "";
     }
 
 
@@ -81,7 +82,7 @@ public class SCXMLReaderTest {
 //        String tt = encrypt(str);
 
         //URL url = SCXMLTestHelper.getResource("helloworld.xml");
-        URL url = new URL("file", "", "D:\\Documents\\GitProject\\BOOWorkflow\\BOWorkflow\\target\\classes\\GuestOrder2.xml");
+        URL url = new URL("file", "", "F:\\MyGitRepos\\BOOWorkflow\\BOOWorkflow\\BOWorkflow\\target\\classes\\crowd.xml");
         SCXML scxml = new SCXMLReader().read(url);
         Evaluator evaluator = new JexlEvaluator();
         SCXMLExecutor executor = new SCXMLExecutor(evaluator, new MulitStateMachineDispatcher(), new SimpleErrorReporter());
