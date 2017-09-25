@@ -740,7 +740,7 @@ public final class SCXMLReader {
                         } else if (ELEM_PARALLEL.equals(name)) {
                             readParallel(reader, configuration, scxml, state);
                         } else if (ELEM_DATAMODEL.equals(name)) {
-                            readDatamodel(reader, configuration, null, state);
+                            readDatamodel(reader, configuration, scxml, state);
                         } else if (ELEM_INVOKE.equals(name)) {
                             readInvoke(reader, configuration, state);
                         } else if (ELEM_HISTORY.equals(name)) {

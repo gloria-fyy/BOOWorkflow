@@ -80,8 +80,8 @@ public class SCXMLReaderTest {
 //        String str = "YAWL";
 //        String tt = encrypt(str);
 
-        //URL url = SCXMLTestHelper.getResource("helloworld.xml");
-        URL url = new URL("file", "", "D:\\Documents\\GitProject\\BOOWorkflow\\BOWorkflow\\target\\classes\\GuestOrder2.xml");
+        URL url = SCXMLTestHelper.getResource("GuestOrder.xml");
+        //URL url = new URL("file", "", "E:\\Documents\\GitProject\\BOOWorkflow\\BOWorkflow\\target\\classes\\GuestOrder.xml");
         SCXML scxml = new SCXMLReader().read(url);
         Evaluator evaluator = new JexlEvaluator();
         SCXMLExecutor executor = new SCXMLExecutor(evaluator, new MulitStateMachineDispatcher(), new SimpleErrorReporter());
