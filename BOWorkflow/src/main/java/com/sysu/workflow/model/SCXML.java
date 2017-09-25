@@ -1,6 +1,7 @@
 
 package com.sysu.workflow.model;
 
+import com.sysu.workflow.bridge.InheritableContext;
 import com.sysu.workflow.model.extend.Resources;
 import com.sysu.workflow.model.extend.Tasks;
 
@@ -126,6 +127,10 @@ public class SCXML implements Serializable, Observable,
      * @see #generateTransitionTargetId()
      */
     private long ttNextId;
+
+    private InheritableContext inheritedContext;
+
+    private String baseBusinessObjectName = null;
 
     /**
      * Constructor.
@@ -419,6 +424,22 @@ public class SCXML implements Serializable, Observable,
 
     public void setResources(Resources resources) {
         this.resources = resources;
+    }
+
+    public InheritableContext getInheritedContext() {
+        return inheritedContext;
+    }
+
+    public void setInheritedContext(InheritableContext inheritedContext) {
+        this.inheritedContext = inheritedContext;
+    }
+
+    public String getBaseBusinessObjectName() {
+        return baseBusinessObjectName;
+    }
+
+    public void setBaseBusinessObjectName(String baseBusinessObjectName) {
+        this.baseBusinessObjectName = baseBusinessObjectName;
     }
 }
 
