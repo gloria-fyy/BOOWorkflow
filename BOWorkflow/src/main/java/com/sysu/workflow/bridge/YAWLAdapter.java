@@ -1,6 +1,6 @@
 package com.sysu.workflow.bridge;
 
-import org.apache.commons.codec.binary.Base64;
+//import org.apache.commons.codec.binary.Base64;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -46,7 +46,8 @@ public class YAWLAdapter extends EngineClient implements IRouterAdapter {
         MessageDigest md = MessageDigest.getInstance("SHA");
         md.update(text.getBytes("UTF-8"));
         byte raw[] = md.digest();
-        return new Base64(-1).encodeToString(raw); // -1 means no line breaks
+        //return new Base64(-1).encodeToString(raw); // -1 means no line breaks
+        return "";
     }
 
     /**
